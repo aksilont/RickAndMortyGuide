@@ -7,20 +7,20 @@
 
 import Foundation
 
-struct CharacterPage: Codable {
-    let info: PageInfo
+struct CharactersResponse: Codable {
+    let info: CharactersPageInfo
     let results: [Character]
 }
 
 // MARK: - Info
-struct PageInfo: Codable {
+struct CharactersPageInfo: Codable {
     let count, pages: Int
     let next: String?
     let prev: String?
 }
 
 // MARK: - Character
-struct Character: Codable, CustomStringConvertible {
+struct Character: Codable, Identifiable, CustomStringConvertible {
     let id: Int
     let name: String
     let status: Status

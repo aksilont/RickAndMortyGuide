@@ -10,38 +10,42 @@ import Combine
 
 struct MainView: View {
     @ObservedObject var characterViewModel = CharacterViewModel()
-    @State var segmentIndex: Int = 1
+    @ObservedObject var guideViewModel = GuideViewModel()
+    @State var selectedIndex: Int = 1
     
     var body: some View {
         VStack {
             Text("Rick&Morty Guide")
                 .font(.title)
-            Picker("", selection: $segmentIndex) {
+            
+            Picker("", selection: $guideViewModel.indexEndpoint) {
                 Text("Characters").tag(1)
                 Text("Locations").tag(2)
                 Text("Episodes").tag(3)
             }
             .padding(.horizontal, 5)
             .pickerStyle(.segmented)
-            if segmentIndex == 1 {
-                charactersView
+            
+            List {
+                switch guideViewModel.indexEndpoint {
+                case 1:
+                    ForEach(guideViewModel.characters) { item in
+                        Text(item.name)
+                    }
+                case 2:
+                    ForEach(guideViewModel.locations) { item in
+                        Text(item.name ?? "")
+                    }
+                case 3:
+                    ForEach(guideViewModel.episodes) { item in
+                        Text(item.name)
+                    }
+                default:
+                    Text("No data")
+                    Spacer()
+                }
             }
-            Spacer()
-        }
-    }
-    
-    var charactersView: some View {
-        return VStack {
-            TextField("Введите id персонажа", text: $characterViewModel.id)
-                .padding(.horizontal, 5)
-                .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.gray))
-                .padding([.leading, .trailing])
-                .keyboardType(.numberPad)
-            HStack {
-                Text(characterViewModel.character?.description ?? "")
-                    .padding(.horizontal)
-                Spacer()
-            }
+            .listStyle(PlainListStyle())
         }
     }
 }
